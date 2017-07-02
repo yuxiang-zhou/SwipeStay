@@ -96,4 +96,5 @@
     <engine name="ios" spec="4.3.1" />
     <engine name="android" spec="6.1.0" />
     <plugin name="cordova-plugin-geolocation" spec="^2.4.3" />
+    <plugin name="cordova-plugin-googlemaps" spec="^1.4.1" />
 </widget>
