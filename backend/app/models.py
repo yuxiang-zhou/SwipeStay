@@ -24,6 +24,9 @@ class Hotel(db.Model):
     price_unit = db.Column(db.Integer)
     n_guests = db.Column(db.Integer)
     n_beds = db.Column(db.Integer)
+    n_rooms = db.Column(db.Integer, default=1)
+    shared = db.Column(db.Boolean, default=False)
+    address = db.Column(db.String(2048), default='')
     room_type = db.Column(db.String(64))
     images = db.Column(db.String(6400))
     # fields
