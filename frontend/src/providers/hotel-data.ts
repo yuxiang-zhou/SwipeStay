@@ -12,11 +12,11 @@ import 'rxjs/add/observable/of';
 @Injectable()
 export class HotelData {
 
-  host: string = 'http://178.62.38.12/api';
+  host: string = 'http://178.62.38.12:8108/api';
 
   constructor(public http: Http, public user: UserData) { }
 
-  load(condition: any): any {
+  load(condition: any): Observable<any> {
     return this.http.get(this.host + '/hotel/filter/1').map(this.processData, this);
   }
 
@@ -24,7 +24,7 @@ export class HotelData {
     return this.load({});
   }
 
-  processData(data: any) {
+  processData(data: any): any {
     // just some good 'ol JS fun with objects and arrays
     // build up the data by linking speakers to sessions
     let hotels = data.json();
