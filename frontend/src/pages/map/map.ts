@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 
 import { ConferenceData } from '../../providers/conference-data';
+import { HotelData } from '../../providers/hotel-data';
 import { Geolocation } from '@ionic-native/geolocation';
 
 
@@ -17,17 +18,21 @@ declare var google: any;
 export class MapPage {
 
   @ViewChild('mapCanvas') mapElement: ElementRef;
-  constructor(public confData: ConferenceData, public platform: Platform, private geolocation: Geolocation) {
-    this.geolocation.getCurrentPosition().then((resp:any) => {
+  constructor(public confData: ConferenceData, public platform: Platform, public hotelData: HotelData, private geolocation: Geolocation) {
+    this.geolocation.getCurrentPosition().then((resp: any) => {
       // resp.coords.latitude
       // resp.coords.longitude
       console.log(resp);
-    }).catch((error:any) => {
+    }).catch((error: any) => {
       console.log('Error getting location', error);
     });
   }
 
   ionViewDidLoad() {
+
+    this.hotelData.load().subscribe((data:any) => {
+      console.log(data);
+    });
 
     this.confData.getMap().subscribe((mapData: any) => {
       let mapEle = this.mapElement.nativeElement;
