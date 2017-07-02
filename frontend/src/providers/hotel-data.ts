@@ -10,7 +10,7 @@ import 'rxjs/add/observable/of';
 
 
 @Injectable()
-export class ConferenceData {
+export class HotelData {
 
   host: string = 'http://178.62.38.12/api';
 

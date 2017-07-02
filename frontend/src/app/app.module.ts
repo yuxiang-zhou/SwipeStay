@@ -26,6 +26,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { SupportPage } from '../pages/support/support';
 
 import { ConferenceData } from '../providers/conference-data';
+import { HotelData } from '../providers/hotel-data';
 import { UserData } from '../providers/user-data';
 
 
@@ -87,6 +88,7 @@ import { UserData } from '../providers/user-data';
   providers: [
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     ConferenceData,
+    HotelData,
     UserData,
     InAppBrowser,
     SplashScreen
