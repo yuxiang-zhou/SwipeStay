@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 
-import { AlertController, App, FabContainer, ItemSliding, List, ModalController, NavController, ToastController, LoadingController, Refresher } from 'ionic-angular';
+import { AlertController, App, FabContainer, ItemSliding, List, ModalController, NavController, ToastController, LoadingController, Refresher, Platform } from 'ionic-angular';
 
 /*
   To learn how to use third party libs in an
@@ -14,17 +14,19 @@ import { UserData } from '../../providers/user-data';
 import { SessionDetailPage } from '../session-detail/session-detail';
 import { ScheduleFilterPage } from '../schedule-filter/schedule-filter';
 
+declare var google: any;
 
 @Component({
-  selector: 'page-schedule',
-  templateUrl: 'schedule.html'
+  selector: 'page-explore',
+  templateUrl: 'explore.html'
 })
-export class SchedulePage {
-  // the list is a child of the schedule page
-  // @ViewChild('scheduleList') gets a reference to the list
-  // with the variable #scheduleList, `read: List` tells it to return
+export class ExplorePage {
+  // the list is a child of the explore page
+  // @ViewChild('exploreList') gets a reference to the list
+  // with the variable #exploreList, `read: List` tells it to return
   // the List and not a reference to the element
-  @ViewChild('scheduleList', { read: List }) scheduleList: List;
+  @ViewChild('exploreList', { read: List }) exploreList: List;
+  @ViewChild('mapCanvasExplore') mapElement: ElementRef;
 
   dayIndex = 0;
   queryText = '';
@@ -43,16 +45,17 @@ export class SchedulePage {
     public toastCtrl: ToastController,
     public confData: ConferenceData,
     public user: UserData,
+    public platform: Platform,
   ) {}
 
   ionViewDidLoad() {
-    this.app.setTitle('Schedule');
-    this.updateSchedule();
+    this.app.setTitle('Explore');
+    this.updateExplore();
   }
 
-  updateSchedule() {
-    // Close any open sliding items when the schedule updates
-    this.scheduleList && this.scheduleList.closeSlidingItems();
+  updateExplore() {
+    // Close any open sliding items when the explore updates
+    this.exploreList && this.exploreList.closeSlidingItems();
 
     this.confData.getTimeline(this.dayIndex, this.queryText, this.excludeTracks, this.segment).subscribe((data: any) => {
       this.shownSessions = data.shownSessions;
@@ -67,10 +70,9 @@ export class SchedulePage {
     modal.onWillDismiss((data: any[]) => {
       if (data) {
         this.excludeTracks = data;
-        this.updateSchedule();
+        this.updateExplore();
       }
     });
-
   }
 
   goToSessionDetail(sessionData: any) {
@@ -127,7 +129,7 @@ export class SchedulePage {
           handler: () => {
             // they want to remove this session from their favorites
             this.user.removeFavorite(sessionData.name);
-            this.updateSchedule();
+            this.updateExplore();
 
             // close the sliding item and hide the option buttons
             slidingItem.close();
@@ -168,4 +170,40 @@ export class SchedulePage {
       }, 1000);
     });
   }
+
+  displayMapView() //todo: Doesn't work
+  {
+
+    this.confData.getMap().subscribe((mapData: any) => {
+
+      let mapEle = this.mapElement.nativeElement;
+
+      let map = new google.maps.Map(mapEle, {
+        center: mapData.find((d: any) => d.center),
+        zoom: 16
+      });
+
+      mapData.forEach((markerData: any) => {
+        let infoWindow = new google.maps.InfoWindow({
+          content: `<h5>${markerData.name}</h5>`
+        });
+
+        let marker = new google.maps.Marker({
+          position: markerData,
+          map: map,
+          title: markerData.name
+        });
+
+        marker.addListener('click', () => {
+          infoWindow.open(map, marker);
+        });
+      });
+
+      google.maps.event.addListenerOnce(map, 'idle', () => {
+        mapEle.classList.add('show-map');
+      });
+
+    });
+  }
+
 }
