@@ -20,6 +20,7 @@ declare var google: any;
   selector: 'page-explore',
   templateUrl: 'explore.html'
 })
+
 export class ExplorePage {
   // the list is a child of the explore page
   // @ViewChild('exploreList') gets a reference to the list
