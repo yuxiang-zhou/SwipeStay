@@ -27,7 +27,8 @@ export class HotelData {
   processData(data: any): Hotel[] {
     // just some good 'ol JS fun with objects and arrays
     // build up the data by linking speakers to sessions
-    let hotels = data.json();
+    let hotels = data.json().data;
+
     hotels.forEach((hotel: any) => {
       // post process datas
       hotel.rating = parseInt(hotel.rating);
